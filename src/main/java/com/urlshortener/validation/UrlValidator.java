@@ -28,7 +28,7 @@ import java.util.Set;
  * </ul>
  */
 @Component
-public class UrlValidator {
+public class UrlValidator implements com.urlshortener.service.UrlValidation {
 
     private static final int MAX_URL_LENGTH = 2048;
     private static final Set<String> ALLOWED_SCHEMES = Set.of("http", "https");

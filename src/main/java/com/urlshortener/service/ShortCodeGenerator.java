@@ -31,7 +31,7 @@ import java.security.SecureRandom;
  * removing flexibility in the duplicate-URL strategy.
  */
 @Component
-public class ShortCodeGenerator {
+public class ShortCodeGenerator implements CodeGenerator {
 
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int BASE = ALPHABET.length(); // 62

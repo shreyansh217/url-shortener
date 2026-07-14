@@ -12,8 +12,8 @@ CREATE TABLE url_mappings (
     id           BIGSERIAL    PRIMARY KEY,
     short_code   VARCHAR(16)  NOT NULL,
     original_url TEXT         NOT NULL,
-    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    expires_at   TIMESTAMPTZ,
+    created_at   TIMESTAMP WITH TIME ZONE  NOT NULL DEFAULT NOW(),
+    expires_at   TIMESTAMP WITH TIME ZONE,
     hit_count    BIGINT       NOT NULL DEFAULT 0,
     is_custom    BOOLEAN      NOT NULL DEFAULT FALSE,
 

@@ -9,8 +9,8 @@ import com.urlshortener.model.UrlMapping;
 import com.urlshortener.repository.UrlMappingRepository;
 import com.urlshortener.validation.UrlValidator;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,22 +37,29 @@ import org.springframework.stereotype.Service;
  * The generator draws from a ~3.5 trillion code-space. In the astronomically rare event of
  * a collision, the service retries up to {@code MAX_RETRIES} times before failing.
  */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UrlShortenerService {
 
+    private static final Logger log = LoggerFactory.getLogger(UrlShortenerService.class);
     private static final int MAX_RETRIES = 5;
 
     private final UrlMappingRepository repository;
-    private final ShortCodeGenerator generator;
-    private final UrlValidator urlValidator;
+    private final CodeGenerator generator;
+    private final UrlValidation urlValidator;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     @Value("${app.duplicate-url-policy:RETURN_EXISTING}")
     private String duplicateUrlPolicy;
+
+    public UrlShortenerService(UrlMappingRepository repository,
+                               CodeGenerator generator,
+                               UrlValidation urlValidator) {
+        this.repository   = repository;
+        this.generator    = generator;
+        this.urlValidator = urlValidator;
+    }
 
     /**
      * Shorten a URL, honouring the duplicate-URL policy and custom alias if provided.

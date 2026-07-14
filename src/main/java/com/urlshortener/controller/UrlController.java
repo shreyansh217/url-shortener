@@ -5,22 +5,20 @@ import com.urlshortener.dto.ShortenResponse;
 import com.urlshortener.dto.StatsResponse;
 import com.urlshortener.service.UrlShortenerService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 /**
  * REST controller exposing the URL shortener API.
  *
  * <h2>Endpoints</h2>
  * <ul>
- *   <li>{@code POST /shorten}        – Create a short code for a given URL</li>
- *   <li>{@code GET  /{code}}          – Redirect (301) to the original URL</li>
+ *   <li>{@code POST /shorten}         – Create a short code for a given URL</li>
+ *   <li>{@code GET  /{code}}           – Redirect (301) to the original URL</li>
  *   <li>{@code GET  /api/stats/{code}} – Retrieve analytics for a short code</li>
  * </ul>
  *
@@ -31,12 +29,16 @@ import java.net.URI;
  * Trade-off: if you need to change the target URL later, cached 301s in browsers won't
  * update automatically. Acceptable for this exercise; production would add TTL/cache-control.
  */
-@Slf4j
 @RestController
-@RequiredArgsConstructor
 public class UrlController {
 
+    private static final Logger log = LoggerFactory.getLogger(UrlController.class);
+
     private final UrlShortenerService service;
+
+    public UrlController(UrlShortenerService service) {
+        this.service = service;
+    }
 
     /**
      * Shorten a URL.

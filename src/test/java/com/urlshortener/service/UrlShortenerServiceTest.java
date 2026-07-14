@@ -24,14 +24,17 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link UrlShortenerService} using Mockito.
- * All dependencies are mocked — no Spring context, no DB.
+ *
+ * All dependencies are mocked as interfaces (CodeGenerator, UrlValidation, UrlMappingRepository).
+ * Mockito uses JDK dynamic proxy for interfaces — no byte-buddy class instrumentation needed.
+ * This makes the tests compatible with Java 25 where byte-buddy inline mock maker fails.
  */
 @ExtendWith(MockitoExtension.class)
 class UrlShortenerServiceTest {
 
     @Mock private UrlMappingRepository repository;
-    @Mock private ShortCodeGenerator generator;
-    @Mock private UrlValidator urlValidator;
+    @Mock private CodeGenerator generator;    // interface → JDK proxy, no byte-buddy
+    @Mock private UrlValidation urlValidator; // interface → JDK proxy, no byte-buddy
 
     @InjectMocks
     private UrlShortenerService service;

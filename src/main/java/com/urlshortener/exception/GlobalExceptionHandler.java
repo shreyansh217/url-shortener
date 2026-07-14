@@ -1,14 +1,14 @@
 package com.urlshortener.exception;
 
 import com.urlshortener.validation.UrlValidator;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.URI;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -19,17 +19,18 @@ import java.util.stream.Collectors;
  * error responses have a consistent, machine-readable shape:
  * <pre>
  * {
- *   "type":   "about:blank",
- *   "title":  "Not Found",
- *   "status": 404,
- *   "detail": "No URL mapping found for code: xyz",
+ *   "type":      "about:blank",
+ *   "title":     "Not Found",
+ *   "status":    404,
+ *   "detail":    "No URL mapping found for code: xyz",
  *   "timestamp": "2025-01-01T00:00:00Z"
  * }
  * </pre>
  */
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UrlNotFoundException.class)
     public ProblemDetail handleNotFound(UrlNotFoundException ex) {

@@ -1,6 +1,7 @@
 package com.urlshortener.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.urlshortener.UrlShortenerApplication;
 import com.urlshortener.dto.ShortenRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Full integration tests against H2 in-memory database.
  *
+ * <p>We explicitly reference {@link UrlShortenerApplication} in {@code @SpringBootTest(classes=...)}
+ * because {@code spring.classformat.ignore=true} (needed for Java 25 compatibility) causes
+ * Spring's auto-discovery to skip class files it cannot parse, including the main app class.
+ *
  * <p>Each test runs in a transaction that is rolled back afterwards,
  * so tests are fully isolated from one another.
- *
- * <p>Covers:
- * <ul>
- *   <li>Shorten → redirect round-trip</li>
- *   <li>Unknown code returns 404</li>
- *   <li>Duplicate URL returns existing mapping</li>
- *   <li>Custom alias happy path</li>
- *   <li>Custom alias conflict (409)</li>
- *   <li>Invalid URL (400)</li>
- *   <li>Blank URL (400)</li>
- *   <li>Stats endpoint</li>
- * </ul>
  */
-@SpringBootTest
+@SpringBootTest(classes = UrlShortenerApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional

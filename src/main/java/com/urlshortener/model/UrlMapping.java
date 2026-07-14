@@ -1,11 +1,6 @@
 package com.urlshortener.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.Instant;
 
 /**
@@ -22,10 +17,6 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "url_mappings")
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UrlMapping {
 
     @Id
@@ -45,12 +36,24 @@ public class UrlMapping {
     private Instant expiresAt;
 
     @Column(name = "hit_count", nullable = false)
-    @Builder.Default
     private long hitCount = 0L;
 
     @Column(name = "is_custom", nullable = false)
-    @Builder.Default
     private boolean isCustom = false;
+
+    // ── Constructors ──────────────────────────────────────────────────────────
+
+    public UrlMapping() {}
+
+    private UrlMapping(Builder builder) {
+        this.id          = builder.id;
+        this.shortCode   = builder.shortCode;
+        this.originalUrl = builder.originalUrl;
+        this.createdAt   = builder.createdAt;
+        this.expiresAt   = builder.expiresAt;
+        this.hitCount    = builder.hitCount;
+        this.isCustom    = builder.isCustom;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -58,4 +61,55 @@ public class UrlMapping {
             createdAt = Instant.now();
         }
     }
+
+    // ── Builder ───────────────────────────────────────────────────────────────
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Long id;
+        private String shortCode;
+        private String originalUrl;
+        private Instant createdAt;
+        private Instant expiresAt;
+        private long hitCount = 0L;
+        private boolean isCustom = false;
+
+        public Builder id(Long id)                   { this.id = id; return this; }
+        public Builder shortCode(String shortCode)   { this.shortCode = shortCode; return this; }
+        public Builder originalUrl(String url)       { this.originalUrl = url; return this; }
+        public Builder createdAt(Instant createdAt)  { this.createdAt = createdAt; return this; }
+        public Builder expiresAt(Instant expiresAt)  { this.expiresAt = expiresAt; return this; }
+        public Builder hitCount(long hitCount)       { this.hitCount = hitCount; return this; }
+        public Builder isCustom(boolean isCustom)    { this.isCustom = isCustom; return this; }
+
+        public UrlMapping build() {
+            return new UrlMapping(this);
+        }
+    }
+
+    // ── Getters & Setters ─────────────────────────────────────────────────────
+
+    public Long getId()                        { return id; }
+    public void setId(Long id)                 { this.id = id; }
+
+    public String getShortCode()               { return shortCode; }
+    public void setShortCode(String shortCode) { this.shortCode = shortCode; }
+
+    public String getOriginalUrl()             { return originalUrl; }
+    public void setOriginalUrl(String url)     { this.originalUrl = url; }
+
+    public Instant getCreatedAt()              { return createdAt; }
+    public void setCreatedAt(Instant createdAt){ this.createdAt = createdAt; }
+
+    public Instant getExpiresAt()              { return expiresAt; }
+    public void setExpiresAt(Instant expiresAt){ this.expiresAt = expiresAt; }
+
+    public long getHitCount()                  { return hitCount; }
+    public void setHitCount(long hitCount)     { this.hitCount = hitCount; }
+
+    public boolean isCustom()                  { return isCustom; }
+    public void setCustom(boolean isCustom)    { this.isCustom = isCustom; }
 }
